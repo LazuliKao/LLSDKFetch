@@ -10,9 +10,17 @@ let currentPath=System.Environment.CurrentDirectory
 //let copyable=["Tools","Lib","Header"]
 
 let download(branch:string)(target:string)=
-    let ct=System.Console.CursorTop+2
     let progress=new ShellProgressBar.ProgressBar(100,target+"@git clone https://github.com/LiteLDev/SDK-cpp.git",
-        ShellProgressBar.ProgressBarOptions(ProgressCharacter = '─',ProgressBarOnBottom = true,ShowEstimatedDuration=true))
+        ShellProgressBar.ProgressBarOptions(
+            ProgressCharacter = '─',
+            ProgressBarOnBottom = true,
+            ShowEstimatedDuration=true,
+            ForegroundColor = System.ConsoleColor.Yellow,
+            ForegroundColorDone = System.ConsoleColor.DarkGreen,
+            BackgroundColor = System.ConsoleColor.DarkGray,
+            BackgroundCharacter = '\u2593',
+            DisplayTimeInRealTime = false
+        ))
     let tempPath=Path.Combine(currentPath,"temp")
     if tempPath|>Directory.Exists then
         try
@@ -24,7 +32,7 @@ let download(branch:string)(target:string)=
         //System.Console.CursorLeft<-System.Console.BufferWidth-1
         //for i=0 to System.Console.BufferWidth do printf "\b"
         //printf "%d / %d\t%s\t%d%%" b c a (b/c)
-        System.Console.CursorTop<-ct
+        //progress.Report(b/c);
         progress.Tick($"{b}/{c} {a}")
     )
     //let targetGit="https://github.com/LiteLDev/SDK-cpp.git"
@@ -47,9 +55,10 @@ let downloadTask(branch:string)(target:string)=
     async{
         download branch target
     }
-//想要异步执行把Async.RunSynchronously去掉然后Task.WaitAll取消注释
-//Task.WaitAll([|
-downloadTask "develop" "Develop"|>Async.RunSynchronously
-downloadTask "main" "Release"|>Async.RunSynchronously
-downloadTask "beta" "Beta"|>Async.RunSynchronously
-//|])
+[
+    downloadTask "develop" "Develop"
+    downloadTask "main" "Release"
+    downloadTask "beta" "Beta"
+]
+|>Async.Parallel
+|>Async.RunSynchronously
