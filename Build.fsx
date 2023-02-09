@@ -16,6 +16,5 @@ for file in Directory.GetFiles(outDir) do
         File.Copy(file,target,true)
         printfn "复制到%s" target
     invokePath "Release"
-    invokePath "Beta"
     invokePath "Develop"
 if Directory.Exists(outDir) then Directory.Delete(outDir,true)

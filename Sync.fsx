@@ -58,12 +58,11 @@ let download(branch:string)(target:string)=
     printfn "Target : %s" tp
     if Directory.Exists(tp)|>not then Directory.CreateDirectory(tp)|>ignore
     for dir in Directory.GetDirectories(betaPath) do
-        if dir.EndsWith(".git")|>not then
+        if dir.EndsWith(".git")|>not && dir.Contains("_git2_")|>not  then
             let name=Path.GetFileName(dir)
             let target=Path.Combine(tp,name)
             if Directory.Exists(target) then Directory.Delete(target,true) 
-            if Path.GetFileName(dir).StartsWith "_git2" |> not then 
-                Directory.Move(dir,target)
+            Directory.Move(dir,target)
 let downloadTask(branch:string)(target:string)=
     async{
         download branch target
