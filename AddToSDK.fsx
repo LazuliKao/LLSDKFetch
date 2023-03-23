@@ -4,6 +4,7 @@ let currentPath=System.Environment.CurrentDirectory
 let paths=[
     @"A:\Documents\GitHub\PixelFaramitaLuminousPolymerization\src\libs\LLSDK"
     @"A:\Documents\GitHub\LiteLoader.NET\SDK"
+    @"A:\Documents\GitHub\LiteLoaderBDS-dotnet\SDK"
     @"A:\Documents\GitHub\PFEssentials\Libs\LLSDK"
     @"A:\Documents\GitHub\BETweaker\SDK"
     @"A:\Documents\GitHub\BDSpyrunner\SDK"

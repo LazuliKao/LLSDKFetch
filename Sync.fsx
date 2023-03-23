@@ -1,16 +1,13 @@
 //һ��ͬ��LLSDK
-#r "nuget: LibGit2Sharp, 0.26.2"
+#r "nuget: LibGit2Sharp, 0.27.0-preview-0182"
 #r "nuget: ShellProgressBar, 5.2.0"
-open System.Threading.Tasks
-open System.Diagnostics
 open LibGit2Sharp.Handlers
 open LibGit2Sharp
 open System.IO
 let currentPath=System.Environment.CurrentDirectory
 //let copyable=["Tools","Lib","Header"]
-
 let download(branch:string)(target:string)=
-    let progress=new ShellProgressBar.ProgressBar(100,target+"@git clone https://github.com/LiteLDev/SDK-cpp.git",
+    let progress=new ShellProgressBar.ProgressBar(9999,target+"@git clone https://github.com/LiteLDev/SDK-cpp.git",
         ShellProgressBar.ProgressBarOptions(
             ProgressCharacter = '─',
             ProgressBarOnBottom = true,
@@ -20,7 +17,7 @@ let download(branch:string)(target:string)=
             BackgroundColor = System.ConsoleColor.DarkGray,
             BackgroundCharacter = '\u2593',
             DisplayTimeInRealTime = false
-        ))
+        )) 
     let tempPath=Path.Combine(currentPath,"temp")
     if tempPath|>Directory.Exists then
         try
@@ -33,26 +30,28 @@ let download(branch:string)(target:string)=
         //for i=0 to System.Console.BufferWidth do printf "\b"
         //printf "%d / %d\t%s\t%d%%" b c a (b/c)
         //progress.Report(b/c);
-        progress.Tick($"{b}/{c} {a}")
+        progress.MaxTicks<-c
+        progress.Tick(1,$"{b}/{c} {a}")
     )
     let callbackt=ProgressHandler(fun str->
         //System.Console.CursorLeft<-System.Console.BufferWidth-1
         //for i=0 to System.Console.BufferWidth do printf "\b"
         //printf "%d / %d\t%s\t%d%%" b c a (b/c)
         //progress.Report(b/c);
-        progress.Tick(str)
+        
+        progress.Tick(progress.CurrentTick+1,str)
         true
     )
-    let callupdatetips=UpdateTipsHandler(fun str _ _->
-        progress.Tick(str)
-        true
-    )
+    //let callupdatetips=UpdateTipsHandler(fun str _ _->
+    //    progress.Tick(str)
+    //    false
+    //)
     //let targetGit="https://github.com/LiteLDev/SDK-cpp.git"
     //https://gitclone.com/github.com/LiteLDev/SDK-cpp.git
     //let targetGit="https://gitclone.com/github.com/LiteLDev/SDK-cpp.git"
     let targetGit="https://ghproxy.com/https://github.com/LiteLDev/SDK-cpp.git"
     //let targetGit="https://hub.njuu.cf/LiteLDev/SDK-cpp.git"
-    let res=LibGit2Sharp.Repository.Clone(targetGit,betaPath,CloneOptions(BranchName=branch,OnProgress=callbackt,OnCheckoutProgress=callback,OnUpdateTips=callupdatetips))
+    let res=LibGit2Sharp.Repository.Clone(targetGit,betaPath,CloneOptions(BranchName=branch,OnProgress=callbackt,OnCheckoutProgress=callback(*,OnUpdateTips=callupdatetips*)))
     printfn "\n%s" res
     let tp=Path.Combine(currentPath,target)
     printfn "Target : %s" tp
