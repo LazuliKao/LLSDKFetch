@@ -5,9 +5,11 @@ let currentPath=System.Environment.CurrentDirectory
 let BDSPath= @"A:\Documents\GitHub\BDS\Latest"
 let wkd=Path.Combine(currentPath,"Release","tools")
 let outDir=Path.Combine(currentPath,"BDSLib")
+System.Console.OutputEncoding=System.Text.Encoding.UTF8
 printfn "生成BDS lib"
 if Directory.Exists(outDir)|>not then Directory.CreateDirectory(outDir)|>ignore
-Process.Start(ProcessStartInfo(Path.Combine(wkd,"LibraryBuilder.exe"),$"-o {outDir} {BDSPath}",WorkingDirectory=wkd))
+//https://github.com/LiteLDev/PeEditor/blob/main/src/pe_editor/PeEditor.cpp#L383
+Process.Start(ProcessStartInfo(Path.Combine(wkd,"PeEditor.exe"),$"-l -s -o {outDir} --pdb {BDSPath}\\bedrock_server.pdb",WorkingDirectory=wkd))
     .WaitForExit()
 for file in Directory.GetFiles(outDir) do 
     let filename=Path.GetFileName(file)

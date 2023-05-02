@@ -9,7 +9,10 @@ let paths=[
     @"A:\Documents\GitHub\BETweaker\SDK"
     @"A:\Documents\GitHub\BDSpyrunner\SDK"
 ]
-for path in paths do 
+for path in paths do
+    let vd=Path.Combine(path,".git")
+    if vd|>File.Exists then 
+        File.Delete vd
     for dir in Directory.GetDirectories(Path.Combine(currentPath,"SDK")) do
         let dirname=Path.GetFileName(dir)
         let targetDir=Path.Combine(path,dirname)
